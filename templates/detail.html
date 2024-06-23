@@ -1,0 +1,115 @@
+{% extends 'wrapper.html' %}
+
+{% block content %}
+        <div class="col-md-9 mb-5">
+            
+            <img src="{{ article.image.url }}" width="100%" alt="">
+            <h1>{{ article.name }}</h1>
+
+            <p>{{ article.text }}</p>
+
+            <p>{{ article.reg_date|date:"d" }}-{{ article.reg_date|date:"F" }} {{ article.reg_date|date:"Y" }}y
+                {% if article.author %}   
+                 
+                 article.author }}
+                {% endif %}
+               <span class="ml-4">
+
+                <a href="#" {% if fallower %} class="reaction" {% endif %}
+                 data-target="likes" data-id="{{ article.id }}">
+                    <i class="fa fa-thumbs-up" style="font-size: 1.5em; color:orange;"></i> 
+                </a> 
+                <span id="likes">{{ article.likes }}</span> 
+               
+                <a href="#"{% if fallower %} class="reaction" {% endif %} data-target="dislikes"
+                        data-id="{{ article.id }}">
+                    <i class="fa fa-thumbs-down" style="font-size: 1.5em; color:orange;"></i>  
+                </a>    
+                <span id="dislikes">{{ article.dislikes }}</span>
+           
+            </span> 
+            </p>
+
+
+            <div class="col-md-12">
+                <div class="text-center">
+                    <h2>Bildirilgan fikrlar</h2>
+                </div>
+                {% for comment in comments %}
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+
+                        <img src="/static/index.png" width="80px" class="img-overlay" alt="">
+                        <h3 class="ml-3">{{ comment.author.name }} {{ comment.author.surname }}</h3>
+                    </div>
+                    <p>
+                       {{ comment.text }}
+                    </p>
+                </div>
+                {% empty %}
+                    <h1>Ma'lumotlar topilmadi </h1>
+                {% endfor %}
+
+
+            </div>
+
+            <div class="col-md-12 mt-5 mb-5">
+                <div class="text-center">
+                    <h2>Fikr bildirish</h2>
+                </div>
+                {% if fallower %}
+                <form action="/add_comment" method="post">
+
+                    {% csrf_token %}
+                    <input type="hidden" name="article_id" value="{{ article.id }}" id="">
+                    <div class="form-group">
+                        <textarea name="comment" class="form-control" id="" cols="30" rows="10">
+
+                        </textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-success" type="submit">Ok</button>
+                    </div>   
+                </form>
+                {% else %}
+                    <h1>Fikr qoldirish uchun ro'yxatdan o'ting</h1>
+                {% endif %}
+
+            </div>
+
+
+
+
+        </div>
+
+        
+
+
+
+        <script src="/static/jquery.js"></script>
+
+        <script>
+            $('.reaction').on('click', function(e){
+                
+                e.preventDefault();
+
+              let target = $(this).attr('data-target');
+              let article_id = $(this).attr('data-id');
+              console.log(target, article_id);
+
+              $.ajax({
+                  url:"/reaction",
+                  method:"GET",
+                  data:{target:target,article_id:article_id},
+                  success:function(data){
+                   
+                      $('#likes').html(data.likes)
+                      $('#dislikes').html(data.dislikes)
+                  }
+              });
+
+            })
+        </script>
+
+{% endblock %}

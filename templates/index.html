@@ -1,0 +1,41 @@
+{% extends 'wrapper.html' %}
+              {% block content %}
+
+              <div class="col-md-9">
+                  <div class="banner"></div>
+                <div class="row mt-5">
+                    {% for a in articles %}
+                    <div class="col-md-6 mt-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <img src="{{ a.image.url }}" width="100%" alt="">
+                            </div>
+                            <div class="card-footer">
+                                <h4>{{ a.name }}</h4>
+                                <p>
+                                  {{ a.text|truncatewords:"10" }}
+                                </p>
+                                <p>{{ a.reg_date|date:"d" }}-{{ a.reg_date|date:"F" }} {{ a.reg_date|date:"Y" }}y
+                                {% if a.author %}   
+                                  {{ a.author }}
+                                {% endif %}
+                               <span class="ml-4">
+
+                                 <i class="fa fa-thumbs-up"></i> {{ a.likes }} 
+                                 <i class="fa fa-thumbs-down"></i>  {{ a.dislikes }}
+                               </span> 
+                                </p>
+                                <a href="{% url 'blog:detail' a.id %}">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                
+                </div>
+
+
+              </div>
+
+
+              {% endblock %}

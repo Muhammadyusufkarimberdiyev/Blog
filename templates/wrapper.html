@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="">
+    <!-- <link rel="stylesheet" href="{% static 'bootstrap/dist/'  %}"> -->
+
+        <style>
+            .banner{
+                width: 100%;
+                margin: 0 10px;
+                border-radius: 20px;
+                min-height: 300px;
+                background: linear-gradient(90deg,#c2eb81,#cbf0ff,#93e3fd,#72db92); 
+            }
+        </style>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-success">
+        <a class="navbar-brand" href="/">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <!-- {{request.user.is_authenticated}} -->
+              {%if request.user.is_authenticated %}
+                {%if request.user.is_superuser%}
+                  <a class="nav-link" href="/admin" class="mr-3">
+                    Admin_panel
+                  </a>
+                {%else%}
+                  <a class="nav-link" href="{% url 'follower:profil' %}" class="mr-3">
+                <!-- <i class="fa fa-user"></i> -->
+                Profil
+                </a>
+                {%endif%}
+              {%else%}
+              <a class="nav-link" href="{% url 'blog:login' %}">Kirish</a>
+              {%endif%}
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+
+          </ul>
+
+
+          <form class="form-inline my-2 my-lg-0">
+
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+
+      <div class="container mt-5">
+          <div class="row">
+            
+            {% if messages %}
+            <div class="col-md-12 text-center p-3 alert alert-danger">
+              {% for m in messages %}
+                  <h3 class="text-{{ m.tags }}">{{ m }}</h3>
+              {% endfor %} 
+            </div>
+             {% endif %} 
+            
+            
+             <div class="col-md-3">
+
+                <div class="text-center">
+                    <h3>Bo'limlar</h3>
+                </div>
+                <ul class="list-group">
+                    {% for c in categorys %}
+                    <li class="list-group-item">
+                        <a href="{% url 'blog:category' c.id  %}">{{ c.name }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                  </ul>
+
+                  <div class="text-center mt-5">
+                    <h3>Top maqolalar</h3>
+                </div>
+                <ul class="list-group">
+                    {% for a in articles %}
+                    <li class="list-group-item">
+                        <a href="#">{{ a.name }}</a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+
+                  <div class="text-center mt-5">
+                    <h3>Top mualliflar</h3>
+                </div>
+                <ul class="list-group">
+                    {% for f in fallowers %}
+                    <li class="list-group-item">
+                        <a href="{% url 'blog:author_articles' f.id  %}">{{ f.name }} {{ f.surname }}</a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                   
+              </div>
+
+              {% block content %}
+
+
+              {% endblock %}
+
+            </div>
+        </div>
+  </body>
+  </html>
